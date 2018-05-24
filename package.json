@@ -1,0 +1,26 @@
+{
+  "name": "challenge-ak",
+  "version": "1.0.0",
+  "description": "app for challenge alaska",
+  "main": "index.js",
+  "engines":{
+    "node" : "8.1.1",
+    "npm" : "5.0.3"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sarkispeha/challenge-ak.git"
+  },
+  "author": "Sarkis Peha",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sarkispeha/challenge-ak/issues"
+  },
+  "homepage": "https://github.com/sarkispeha/challenge-ak#readme",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
