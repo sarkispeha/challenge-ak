@@ -1,4 +1,4 @@
-// dev keys - don't commit
+// dev keys
 module.exports = {
     firebaseApiKey: "AIzaSyBkZCVQhWk-pFDdhT-sycyJPdQATBJtpZA",
     firebaseAuthDomain: "challenge-ak-dev.firebaseapp.com",

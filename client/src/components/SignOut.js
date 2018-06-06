@@ -1,8 +1,13 @@
 import React from 'react';
 
-const SignoutPage = () =>
-  <div>
-    <h1>Sign out Page</h1>
-  </div>
+import { auth } from '../firebase';
 
-export default SignoutPage;
+const SignOutButton = () =>
+  <button
+    type="button"
+    onClick={auth.doSignOut}
+  >
+    Sign Out
+  </button>
+
+export default SignOutButton;
