@@ -3,28 +3,27 @@ import { connect } from 'react-redux';
 import { compose } from 'recompose';
 
 import withAuthorization from './withAuthorization';
-import { db } from '../firebase';
+import { user } from '../firebase';
 
 class HomePage extends Component {
-  // constructor(props) {
-  //   super(props);
-
-  //   this.state = {
-  //     users: null,
-  //   };
-  // }
 
   componentDidMount() {
     const { onSetUsers } = this.props;
 
-    db.onceGetUsers().then(snapshot =>
+    // fetchUsers = async () => {
+    //   const allUsers = await user.onceGetUsers()
+    //   onSetUsers(allUsers.val());
+    // }
+    // fetchUsers();
+    
+    user.onceGetUsers().then(snapshot =>
       onSetUsers(snapshot.val())
     );
+    
   }
 
   render() {
     const { users } = this.props;
-    console.log('USERS', users);
 
     return (
       <div>

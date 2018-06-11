@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 
 import { auth } from '../firebase';
-import { db } from '../firebase';
+import { user } from '../firebase';
 import * as routes from '../constants/routes';
 
 const SignUpPage = ({ history }) =>
@@ -32,7 +32,6 @@ class SignUpForm extends Component {
 
   onSubmit = (event) => {
     const {
-      // eslint-disable-next-line
       username,
       email,
       passwordOne,
@@ -45,8 +44,8 @@ class SignUpForm extends Component {
     auth.doCreateUserWithEmailAndPassword(email, passwordOne)
       .then(authUser => {
 
-         // Create a user in your own accessible Firebase Database too
-        db.doCreateUser(authUser.user.uid, username, email)
+         // Create a user in own accessible Firebase db
+        user.doCreateUser(authUser.user.uid, username, email)
           .then(() => {
             this.setState(() => ({ ...INITIAL_STATE }));
             history.push(routes.HOME);
