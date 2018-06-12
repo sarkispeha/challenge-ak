@@ -1,5 +1,5 @@
 {
-  "name": "challenge-ak",
+  "name": "challenge-ak-server",
   "version": "1.0.0",
   "description": "app for challenge alaska",
   "main": "index.js",
