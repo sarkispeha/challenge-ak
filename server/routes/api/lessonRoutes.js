@@ -28,8 +28,8 @@ module.exports = app => {
     app.get('/api/lessons/:lessonId', (req, res) => {
                 
         const { lessonId } = req.params;
-        Lesson.findOne(
-            {_id: lessonId},
+        Lesson.findById(
+            lessonId,
             (err, item) => {
                 if(err) return res.status(500).send(err)
                 res.send(item);
