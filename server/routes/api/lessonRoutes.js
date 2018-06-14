@@ -25,6 +25,7 @@ module.exports = app => {
 
     });
 
+    //get single lesson
     app.get('/api/lessons/:lessonId', (req, res) => {
                 
         const { lessonId } = req.params;
@@ -33,6 +34,17 @@ module.exports = app => {
             (err, item) => {
                 if(err) return res.status(500).send(err)
                 res.send(item);
+            }
+        )
+    });
+    //get all lessons
+    app.get('/api/lessons', (req, res) => {
+                
+        Lesson.find(
+            {},
+            (err, items) => {
+                if(err) return res.status(500).send(err)
+                res.send(items);
             }
         )
     });
