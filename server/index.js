@@ -10,7 +10,7 @@ const app = express();
 
 app.use(bodyParser.json());
 
-require('./routes/core')(app);
+// require('./routes/core')(app);
 require('./routes/api/lessonRoutes')(app);
 
 if(process.env.NODE_ENV === 'production'){
