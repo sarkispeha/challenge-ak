@@ -7,3 +7,7 @@ export const dateToUnix = (date) => {
 export const startOfDayUnix = (date) => {
     return moment(date).startOf('day').unix();
 }
+
+export const unixToCalDate = (unixNumber) => {
+    return moment.unix(unixNumber).format("YYYY, MM, DD")
+}

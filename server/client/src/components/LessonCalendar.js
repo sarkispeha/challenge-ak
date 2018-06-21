@@ -86,10 +86,7 @@ class LessonCalendar extends Component {
                     modalDate={this.state.modalDate}
                     handleSaveLesson={this.handleSaveLesson}
                 >
-                  
-                </NewLessonModal>
-              
-                
+                </NewLessonModal>  
 
             <div style={{height: '90vh'}} >
                 <BigCalendar
