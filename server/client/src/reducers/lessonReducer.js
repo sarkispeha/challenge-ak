@@ -5,7 +5,7 @@ export default function(state = [], action) {
       case FETCH_LESSONS :
         console.log('FETCHING LESSONS REDUCER');
       
-          if(action.payload.length == 0){
+          if(action.payload.length === 0){
             console.log('RETURNING OG STATE', state); 
             return state;
           }

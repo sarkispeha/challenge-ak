@@ -54,9 +54,9 @@ class LessonCalendar extends Component {
             shadowNecessary: values.shadow,
             date: timeUtil.startOfDayUnix(date),
             time:{
-                AM: values.duration == "AM" ? true : false ,
-                PM: values.duration == "PM" ? true : false,
-                allDay: values.duration == "allDay" ? true : false
+                AM: values.duration === "AM" ? true : false ,
+                PM: values.duration === "PM" ? true : false,
+                allDay: values.duration === "allDay" ? true : false
             },
             createdBy: 'Somebody'
         }

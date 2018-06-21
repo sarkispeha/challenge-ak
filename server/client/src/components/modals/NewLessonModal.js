@@ -21,6 +21,7 @@ class NewLessonModal extends Component {
                 isModalVisible: this.props.isModalVisible
             });
         }
+    }
 
     close = () => {
         this.setState({ 
