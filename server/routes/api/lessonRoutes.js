@@ -7,11 +7,13 @@ module.exports = app => {
     //create lesson
     app.post('/api/lessons', async (req, res) => {
         
-        const {studentName , type, date, createdBy} = req.body;
+        const {studentName , type, date, time, shadowNecessary,createdBy} = req.body;
         const lesson = new Lesson ({
             studentName,
             type,
             date,
+            time,
+            shadowNecessary,
             createdTimestamp: moment().unix(),
             createdBy
         });

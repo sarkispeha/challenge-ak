@@ -3,14 +3,10 @@ import { connect } from 'react-redux';
 import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+
 import NewLessonModal from './modals/NewLessonModal'
-
-import { fetchLessons } from '../actions';
-
-
-//make moment helper
-// let test = moment.unix(1528920360).format("YYYY, MM, DD")
-//new Date(test)
+import * as timeUtil from '../utils/timeUtils';
+import * as actions from '../actions';
 
 BigCalendar.momentLocalizer(moment);
 
@@ -26,20 +22,15 @@ class LessonCalendar extends Component {
           }
     }
 
-    componentDidMount() {
-        console.log('GETTING LESSONS FROM COMPONENTDIDMOUNT');    
-        this.props.fetchLessons(); 
+    componentDidMount() {  
+        this.props.fetchLessons();
     }
-
-    
 
     onBtnOpenModalClick = (slotInfo) => {
         this.setState({
             isModalVisible: true,
             modalTitle: slotInfo.start.toLocaleString()
-        })
-        console.log('LESSON STATE: ', this.state);
-        
+        })   
     }
 
     selectSlot = (slotInfo) => {
@@ -48,12 +39,40 @@ class LessonCalendar extends Component {
             isModalVisible: true,
             modalDate: slotInfo.start.toLocaleString()
         })
-        console.log('LESSON STATE: ', this.state);
         // alert(
         //     `Hey dude you selected slot: \n\nstart ${slotInfo.start.toLocaleString()} ` +
         //         `\nend: ${slotInfo.end.toLocaleString()}` +
         //         `\naction: ${slotInfo.action}`
         //     )
+    }
+
+    handleSaveLesson = async (values, date) => {
+
+        const lessonDto = {
+            studentName: values.student_name,
+            type: values.lesson_type,
+            shadowNecessary: values.shadow,
+            date: timeUtil.startOfDayUnix(date),
+            time:{
+                AM: values.duration == "AM" ? true : false ,
+                PM: values.duration == "PM" ? true : false,
+                allDay: values.duration == "allDay" ? true : false
+            },
+            createdBy: 'Somebody'
+        }
+        console.log('LESSON DTO', lessonDto);
+        
+        
+        const newLesson = await this.props.saveNewLesson(lessonDto);
+
+        console.log('NEW LESSON AFTER ASYNC', newLesson);
+        
+        this.setState({
+            lessons: this.props.lessons.push(newLesson),
+            isModalVisible: false
+        })
+        console.log('AFTER SAVE PROPS', this.props);
+        
     }
     
     render() {
@@ -65,6 +84,7 @@ class LessonCalendar extends Component {
                 <NewLessonModal
                     isModalVisible={this.state.isModalVisible}
                     modalDate={this.state.modalDate}
+                    handleSaveLesson={this.handleSaveLesson}
                 >
                   
                 </NewLessonModal>
@@ -89,9 +109,8 @@ class LessonCalendar extends Component {
     } 
 };
 
-function mapStateToProps(state){
-    console.log('MAPSTATETOPROPS LESSONSTATE', state.lessonState);    
+function mapStateToProps(state){ 
     return {lessons: state.lessonState}
 }
 
-export default connect(mapStateToProps, { fetchLessons })(LessonCalendar);
+export default connect(mapStateToProps, actions)(LessonCalendar);

@@ -5,7 +5,12 @@ export default function(state = [], action) {
       case FETCH_LESSONS :
         console.log('FETCHING LESSONS REDUCER');
       
-          // return action.payload;
+          if(action.payload.length == 0){
+            console.log('RETURNING OG STATE', state); 
+            return state;
+          }
+          return action.payload;
+          // eslint-disable-next-line
           const events = [
             {
               id: 0,
@@ -107,8 +112,7 @@ export default function(state = [], action) {
             },
         ];
           console.log('THE EVENTS', events);
-          
-          return events;
+          // return events;
         default:
           return state;
   }
