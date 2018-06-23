@@ -4,9 +4,11 @@ import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
-import NewLessonModal from './modals/NewLessonModal'
+import NewLessonModal from './modals/NewLessonModal';
+// import SignUpLessonModal from './modals/SignUpLessonModal';
 import * as timeUtil from '../utils/timeUtils';
 import * as actions from '../actions';
+import { firebase, user } from '../firebase';
 
 BigCalendar.momentLocalizer(moment);
 
@@ -18,27 +20,38 @@ class LessonCalendar extends Component {
         super();
         this.state = {
             isModalVisible: false,
-            modalTitle: ''
+            modalTitle: '',
+            isAdminEdit: false,
+            isVolunteerEdit: false
           }
     }
 
     componentDidMount() {  
-        this.props.fetchLessons();
-    }
 
-    onBtnOpenModalClick = (slotInfo) => {
-        this.setState({
-            isModalVisible: true,
-            modalTitle: slotInfo.start.toLocaleString()
-        })   
+        this.props.fetchLessons();
+
+        firebase.auth.onAuthStateChanged(authUser => {
+            if(!authUser){
+                return;
+            }
+            user.getOneUser(authUser.uid).then(snapshot =>{
+                this.setState({
+                    userPermissions: snapshot.val().role
+                })
+            })
+        })
+        
     }
 
     selectSlot = (slotInfo) => {
-        // this.onBtnOpenModalClick(slotInfo);
-        this.setState({
-            isModalVisible: true,
-            modalDate: slotInfo.start.toLocaleString()
-        })
+
+        if(this.state.userPermissions === 'admin'){
+            //show NewLessonModal
+            this.setState({
+                isNewLessonModalVisible: true,
+                modalDate: slotInfo.start.toLocaleString()
+            });
+        }
         // alert(
         //     `Hey dude you selected slot: \n\nstart ${slotInfo.start.toLocaleString()} ` +
         //         `\nend: ${slotInfo.end.toLocaleString()}` +
@@ -60,33 +73,35 @@ class LessonCalendar extends Component {
             },
             createdBy: 'Somebody'
         }
-        console.log('LESSON DTO', lessonDto);
-        
         
         const newLesson = await this.props.saveNewLesson(lessonDto);
-
-        console.log('NEW LESSON AFTER ASYNC', newLesson);
-        
+     
         this.setState({
             lessons: this.props.lessons.push(newLesson),
-            isModalVisible: false
+            isNewLessonModalVisible: false
         })
-        console.log('AFTER SAVE PROPS', this.props);
-        
+        console.log('AFTER SAVE PROPS', this.props);     
     }
     
     render() {
-
         // const { isModalVisible } = this.state
         return (
             <div>
               
                 <NewLessonModal
-                    isModalVisible={this.state.isModalVisible}
+                    isModalVisible={this.state.isNewLessonModalVisible}
+                    isAdminEdit={this.state.isAdminEdit}
+                    isVolunteerEdit={this.state.isVolunteerEdit}
                     modalDate={this.state.modalDate}
                     handleSaveLesson={this.handleSaveLesson}
                 >
-                </NewLessonModal>  
+                </NewLessonModal>
+
+                {/* <SignUpLessonModal
+                    isModalVisible={this.state.isSignUpLessonModalVisible}
+                    isVolunteerEdit={this.state.isVolunteerEdit}
+                >
+                </SignUpLessonModal>   */}
 
             <div style={{height: '90vh'}} >
                 <BigCalendar
@@ -111,3 +126,11 @@ function mapStateToProps(state){
 }
 
 export default connect(mapStateToProps, actions)(LessonCalendar);
+
+// const roleBased = true;
+// const authCondition = (authUser) => authUser.role === 'admin' ;
+
+// export default compose(
+//   withAuthorization(authCondition, roleBased),
+//   connect(mapStateToProps, actions)
+// )(LessonCalendar);
