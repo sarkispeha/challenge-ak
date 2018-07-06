@@ -12,13 +12,14 @@ import { firebase, user } from '../firebase';
 
 BigCalendar.momentLocalizer(moment);
 
-let allViews = Object.keys(BigCalendar.Views).map(k => BigCalendar.Views[k])
+let allViews = Object.keys(BigCalendar.Views).map(k => BigCalendar.Views[k]);
 
 class LessonCalendar extends Component {
 
     constructor(props){
         super();
         this.state = {
+            isNewLessonModalVisible: false,
             isModalVisible: false,
             modalTitle: '',
             isAdminEdit: false,
@@ -28,7 +29,38 @@ class LessonCalendar extends Component {
 
     componentDidMount() {  
 
-        this.props.fetchLessons();
+        this.props.fetchLessons().then( () =>{
+            for(let i = 0; i < this.props.lessons.length; i++){
+                let currentLesson = this.props.lessons[i];
+                let lessonDate = currentLesson.date;
+                let startLessonTime, endLessonTime;
+                
+                let timeOfDay = () => {
+                        for( var prop in currentLesson.time){ 
+                        if(currentLesson.time[prop] === true){
+                            return prop;
+                        } 
+                    };
+                }
+
+                if(timeOfDay() === 'AM'){
+                    startLessonTime = timeUtil.unixToCalDate( lessonDate + 36000);
+                    endLessonTime = timeUtil.unixToCalDate( lessonDate + 43200);
+                }else if (timeOfDay() === 'PM'){
+                    startLessonTime = timeUtil.unixToCalDate( lessonDate + 50400);
+                    endLessonTime = timeUtil.unixToCalDate( lessonDate + 57600);
+                }else{
+                    startLessonTime = timeUtil.unixToCalDate( lessonDate + 36000);
+                    endLessonTime = timeUtil.unixToCalDate( lessonDate + 57600);
+                }
+               
+                currentLesson.start = startLessonTime;
+                currentLesson.end = endLessonTime;
+                currentLesson.title = timeOfDay() !== 'allDay' ? currentLesson.type + ' ' + timeOfDay() : currentLesson.type + ' All Day';
+            }
+            // console.log('Finished LESSONS', this.props.lessons);
+            
+        });
 
         firebase.auth.onAuthStateChanged(authUser => {
             if(!authUser){
