@@ -15,18 +15,22 @@ class NewLessonModal extends Component {
             isModalVisible: this.props.isModalVisible
           }
     }
-    componentDidUpdate(prevProps) {
-        if (this.props!== prevProps) {
-            this.setState({
-                isModalVisible: this.props.isModalVisible
-            });
-        }
-    }
+    // componentDidUpdate(prevProps) {
+    //     console.log('IS MODAL VISIBLE', this.props.isModalVisible, prevProps.isModalVisible);
+        
+    //     if (this.props.isModalVisible !== prevProps.isModalVisible) {
+    //         this.setState({
+    //             isModalVisible: this.props.isModalVisible
+    //         });
+    //     }
+    // }
+    componentWillReceiveProps(nextProps) {
+        this.setState({ isModalVisible: nextProps.isModalVisible });  
+      }
 
     close = () => {
-        this.setState({ 
-            isModalVisible: false
-        })
+        this.props.closeModal();
+        this.props.reset(); //from redux-form baked-in props
     }
 
     renderFields(){

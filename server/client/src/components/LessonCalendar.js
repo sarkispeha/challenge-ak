@@ -75,12 +75,20 @@ class LessonCalendar extends Component {
         
     }
 
+    selectEvent = (event) => {
+        if(this.state.userPermissions === 'admin'){
+            //show NewLessonModal with event data
+
+        }
+    }
+
     selectSlot = (slotInfo) => {
 
-        if(this.state.userPermissions === 'admin'){
+        if(this.state.userPermissions === 'admin'){ 
             //show NewLessonModal
             this.setState({
                 isNewLessonModalVisible: true,
+                // isNewLessonModalVisible: !this.state.isNewLessonModalVisible,
                 modalDate: slotInfo.start.toLocaleString()
             });
         }
@@ -112,7 +120,13 @@ class LessonCalendar extends Component {
             lessons: this.props.lessons.push(newLesson),
             isNewLessonModalVisible: false
         })
-        console.log('AFTER SAVE PROPS', this.props);     
+  
+    }
+
+    closeModal = () => {
+        this.setState({
+            isNewLessonModalVisible : false
+        })
     }
     
     render() {
@@ -126,6 +140,7 @@ class LessonCalendar extends Component {
                     isVolunteerEdit={this.state.isVolunteerEdit}
                     modalDate={this.state.modalDate}
                     handleSaveLesson={this.handleSaveLesson}
+                    closeModal={this.closeModal}
                 >
                 </NewLessonModal>
 
@@ -143,7 +158,7 @@ class LessonCalendar extends Component {
                 step={60}
                 startAccessor='start'
                 endAccessor='end'
-                onSelectEvent={event => alert(event.title)}
+                onSelectEvent={event => this.selectEvent(event)}
                 onSelectSlot={ slotInfo => this.selectSlot(slotInfo)}
                 />
             </div>
@@ -154,15 +169,9 @@ class LessonCalendar extends Component {
 };
 
 function mapStateToProps(state){ 
-    return {lessons: state.lessonState}
+    return {
+        lessons: state.lessonState
+    }
 }
 
 export default connect(mapStateToProps, actions)(LessonCalendar);
-
-// const roleBased = true;
-// const authCondition = (authUser) => authUser.role === 'admin' ;
-
-// export default compose(
-//   withAuthorization(authCondition, roleBased),
-//   connect(mapStateToProps, actions)
-// )(LessonCalendar);
