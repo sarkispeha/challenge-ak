@@ -1,34 +1,47 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import _ from 'lodash';
 import { Modal, Overlay } from 'react-modal-construction-kit';
 import { reduxForm, Field } from 'redux-form';
 
 import NewLessonField from './NewLessonField';
 import newLessonFormFields from './newLessonFormFields';
+import { timeOfDay } from '../../utils/timeUtils';
 import '../../styles/modal.css';
+
+let initialLessondata = {};
 
 class NewLessonModal extends Component {
     constructor(props){
         super(props);
 
+        this.formProps = {};
         this.state = {
             isModalVisible: this.props.isModalVisible
           }
     }
-    // componentDidUpdate(prevProps) {
-    //     console.log('IS MODAL VISIBLE', this.props.isModalVisible, prevProps.isModalVisible);
-        
-    //     if (this.props.isModalVisible !== prevProps.isModalVisible) {
-    //         this.setState({
-    //             isModalVisible: this.props.isModalVisible
-    //         });
-    //     }
-    // }
-    componentWillReceiveProps(nextProps) {
-        this.setState({ isModalVisible: nextProps.isModalVisible });  
-      }
 
-    close = () => {
+    componentDidMount(){
+        this.getFormProps();   
+    }
+
+    componentWillReceiveProps(nextProps) {
+   
+        if(nextProps !== this.props){
+            this.setState({ 
+                isModalVisible: nextProps.isModalVisible,
+            });
+
+            let {studentName, type, shadowNecessary, _id} = nextProps.lessonDetail;
+            initialLessondata._id = _id;
+            initialLessondata.student_name = studentName;
+            initialLessondata.lesson_type = type;
+            initialLessondata.shadow_needed = shadowNecessary !== undefined ? shadowNecessary.toString() : '';
+            initialLessondata.duration = timeOfDay(nextProps.lessonDetail); 
+        }
+    }
+
+    close = () => {       
         this.props.closeModal();
         this.props.reset(); //from redux-form baked-in props
     }
@@ -38,8 +51,23 @@ class NewLessonModal extends Component {
             return <Field component={NewLessonField} type={type} label={label} name={name} key={name} />
         })
     }
+
+    getFormProps(){
+        if(this.props.isAdminUpdate){
+            let lessonId = initialLessondata._id;
+            this.formProps.submit = this.props.handleSubmit(values =>this.props.handleUpdateLesson(values, lessonId) );
+        }else{
+            this.formProps.submit = this.props.handleSubmit(values =>this.props.handleSaveLesson(values, this.props.modalDate) );
+        }
+    }
+
+    renderNewOrUpdate(){
+        if(!this.props.isAdminUpdate){ return 'Submit'}else{ return 'Update'};
+    }
     
     render(){
+
+        this.getFormProps();//run on render as isAdminUpdate is passed as a prop and cannot be changed on conponentWillRecieveProps
 
         return (
             <div>
@@ -49,7 +77,7 @@ class NewLessonModal extends Component {
                     isOpen={this.state.isModalVisible}
                 >
                     <h5>Enter Lesson Details</h5>
-                    <form onSubmit={this.props.handleSubmit(values =>this.props.handleSaveLesson(values, this.props.modalDate) )}>
+                    <form onSubmit={this.formProps.submit}>
                         {/* {this.renderFields()} */}
                         <label>Student Name</label>
                         <Field component="input" name="student_name" type="text" />
@@ -80,13 +108,13 @@ class NewLessonModal extends Component {
                             <label >Shadow Needed</label>                   
                             <p>
                             <label>
-                                <Field className="override-radio" component="input" name="shadow" type="radio" value="true"/>
+                                <Field className="override-radio" component="input" name="shadow_needed" type="radio" value="true"/>
                                 <span>Yes</span>
                             </label>
                             </p>
                             <p>
                             <label>
-                                <Field className="override-radio" component="input" name="shadow" type="radio" value="false"/>
+                                <Field className="override-radio" component="input" name="shadow_needed" type="radio" value="false"/>
                                 <span>No</span>
                             </label>
                             </p>
@@ -113,7 +141,7 @@ class NewLessonModal extends Component {
                             </label>
                             </p>
                         </div>
-                        <button type="submit">Submit</button>
+                        <button type="submit">{this.renderNewOrUpdate()}</button>
                     </form>
                     <p>
                         {this.props.modalDate}
@@ -129,4 +157,11 @@ class NewLessonModal extends Component {
 NewLessonModal = reduxForm({
         form: 'newLessonForm'
     })(NewLessonModal);
+
+NewLessonModal = connect(
+    state => ({
+        initialValues: initialLessondata 
+    })
+)(NewLessonModal)
+
 export default NewLessonModal;

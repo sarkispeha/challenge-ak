@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
+import _ from 'lodash';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 import NewLessonModal from './modals/NewLessonModal';
@@ -23,7 +24,9 @@ class LessonCalendar extends Component {
             isModalVisible: false,
             modalTitle: '',
             isAdminEdit: false,
-            isVolunteerEdit: false
+            isVolunteerEdit: false,
+            lessonDetail: {},
+            isAdminUpdate: false
           }
     }
 
@@ -34,19 +37,13 @@ class LessonCalendar extends Component {
                 let currentLesson = this.props.lessons[i];
                 let lessonDate = currentLesson.date;
                 let startLessonTime, endLessonTime;
-                
-                let timeOfDay = () => {
-                        for( var prop in currentLesson.time){ 
-                        if(currentLesson.time[prop] === true){
-                            return prop;
-                        } 
-                    };
-                }
 
-                if(timeOfDay() === 'AM'){
+                let timeOfDayCalc = timeUtil.timeOfDay(currentLesson);
+
+                if(timeOfDayCalc === 'AM'){
                     startLessonTime = timeUtil.unixToCalDate( lessonDate + 36000);
                     endLessonTime = timeUtil.unixToCalDate( lessonDate + 43200);
-                }else if (timeOfDay() === 'PM'){
+                }else if (timeOfDayCalc === 'PM'){
                     startLessonTime = timeUtil.unixToCalDate( lessonDate + 50400);
                     endLessonTime = timeUtil.unixToCalDate( lessonDate + 57600);
                 }else{
@@ -56,7 +53,7 @@ class LessonCalendar extends Component {
                
                 currentLesson.start = startLessonTime;
                 currentLesson.end = endLessonTime;
-                currentLesson.title = timeOfDay() !== 'allDay' ? currentLesson.type + ' ' + timeOfDay() : currentLesson.type + ' All Day';
+                currentLesson.title = timeOfDayCalc !== 'allDay' ? currentLesson.type + ' ' + timeOfDayCalc : currentLesson.type + ' All Day';
             }
             // console.log('Finished LESSONS', this.props.lessons);
             
@@ -78,8 +75,18 @@ class LessonCalendar extends Component {
     selectEvent = (event) => {
         if(this.state.userPermissions === 'admin'){
             //show NewLessonModal with event data
-
-        }
+            this.setState({
+                isNewLessonModalVisible : true,
+                isAdminUpdate : true,
+                lessonDetail : {...event}
+            })
+        }//else if(this.state.userPermissions === 'volunteer'){
+        //     this.setState({
+        //         isSignUpModalVisible: true,
+        //         isAdminEdit : true
+        //     });
+        // }
+        
     }
 
     selectSlot = (slotInfo) => {
@@ -88,8 +95,10 @@ class LessonCalendar extends Component {
             //show NewLessonModal
             this.setState({
                 isNewLessonModalVisible: true,
-                // isNewLessonModalVisible: !this.state.isNewLessonModalVisible,
-                modalDate: slotInfo.start.toLocaleString()
+                isAdminEdit : true,
+                isAdminUpdate : false,
+                modalDate: slotInfo.start.toLocaleString(),
+                lessonDetail : {}
             });
         }
         // alert(
@@ -123,6 +132,32 @@ class LessonCalendar extends Component {
   
     }
 
+    handleUpdateLesson = async (values, lessonId) => {
+
+        const lessonDto = {
+            studentName: values.student_name,
+            type: values.lesson_type,
+            shadowNecessary: values.shadow,
+            time:{
+                AM: values.duration === "AM" ? true : false ,
+                PM: values.duration === "PM" ? true : false,
+                allDay: values.duration === "allDay" ? true : false
+            },
+            createdBy: 'Updated Somebody'
+        }
+        
+        const updatedLesson = await this.props.updateLesson(lessonDto, lessonId);
+        let oldLessonIndx = _.findIndex(this.props.lessons, {_id : lessonId} );
+
+        //TODO create correctly formatted updatedLesson to display on BigCalendar
+        this.props.lessons.splice(oldLessonIndx, 1, updatedLesson);
+
+        this.setState({
+            lessons: this.props.lessons,
+            isNewLessonModalVisible: false
+        })
+    }
+
     closeModal = () => {
         this.setState({
             isNewLessonModalVisible : false
@@ -137,9 +172,12 @@ class LessonCalendar extends Component {
                 <NewLessonModal
                     isModalVisible={this.state.isNewLessonModalVisible}
                     isAdminEdit={this.state.isAdminEdit}
+                    isAdminUpdate={this.state.isAdminUpdate}
+                    lessonDetail={this.state.lessonDetail}
                     isVolunteerEdit={this.state.isVolunteerEdit}
                     modalDate={this.state.modalDate}
                     handleSaveLesson={this.handleSaveLesson}
+                    handleUpdateLesson={this.handleUpdateLesson}
                     closeModal={this.closeModal}
                 >
                 </NewLessonModal>

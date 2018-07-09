@@ -14,6 +14,12 @@ export const saveNewLesson = (lessonDto) => async () => {
     return res.data;
 }
 
+export const updateLesson = (lessonDto, lessonId) => async () => {
+
+    const res = await axios.put('/api/lessons/' + lessonId, lessonDto);
+    return res.data;
+}
+
 // export const saveNewLesson = (values, date) => async dispatch => {    
 //     const dto = {...values, date}
 //     const res = await axios.post('/api/lessons', dto);
