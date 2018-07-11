@@ -5,7 +5,7 @@ import moment from 'moment';
 import _ from 'lodash';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
-import NewLessonModal from './modals/NewLessonModal';
+import AdminLessonModal from './modals/AdminLessonModal';
 // import SignUpLessonModal from './modals/SignUpLessonModal';
 import * as timeUtil from '../utils/timeUtils';
 import * as actions from '../actions';
@@ -20,8 +20,7 @@ class LessonCalendar extends Component {
     constructor(props){
         super();
         this.state = {
-            isNewLessonModalVisible: false,
-            isModalVisible: false,
+            isAdminLessonModalVisible: false,
             modalTitle: '',
             isAdminEdit: false,
             isVolunteerEdit: false,
@@ -74,9 +73,9 @@ class LessonCalendar extends Component {
 
     selectEvent = (event) => {
         if(this.state.userPermissions === 'admin'){
-            //show NewLessonModal with event data
+            //show AdminLessonModal with event data
             this.setState({
-                isNewLessonModalVisible : true,
+                isAdminLessonModalVisible : true,
                 isAdminUpdate : true,
                 lessonDetail : {...event}
             })
@@ -92,9 +91,9 @@ class LessonCalendar extends Component {
     selectSlot = (slotInfo) => {
 
         if(this.state.userPermissions === 'admin'){ 
-            //show NewLessonModal
+            //show AdminLessonModal
             this.setState({
-                isNewLessonModalVisible: true,
+                isAdminLessonModalVisible: true,
                 isAdminEdit : true,
                 isAdminUpdate : false,
                 modalDate: slotInfo.start.toLocaleString(),
@@ -127,7 +126,7 @@ class LessonCalendar extends Component {
      
         this.setState({
             lessons: this.props.lessons.push(newLesson),
-            isNewLessonModalVisible: false
+            isAdminLessonModalVisible: false
         })
   
     }
@@ -154,23 +153,23 @@ class LessonCalendar extends Component {
 
         this.setState({
             lessons: this.props.lessons,
-            isNewLessonModalVisible: false
+            isAdminLessonModalVisible: false
         })
     }
 
     closeModal = () => {
         this.setState({
-            isNewLessonModalVisible : false
+            isAdminLessonModalVisible : false
         })
     }
     
     render() {
-        // const { isModalVisible } = this.state
+
         return (
             <div>
               
-                <NewLessonModal
-                    isModalVisible={this.state.isNewLessonModalVisible}
+                <AdminLessonModal
+                    isModalVisible={this.state.isAdminLessonModalVisible}
                     isAdminEdit={this.state.isAdminEdit}
                     isAdminUpdate={this.state.isAdminUpdate}
                     lessonDetail={this.state.lessonDetail}
@@ -180,7 +179,7 @@ class LessonCalendar extends Component {
                     handleUpdateLesson={this.handleUpdateLesson}
                     closeModal={this.closeModal}
                 >
-                </NewLessonModal>
+                </AdminLessonModal>
 
                 {/* <SignUpLessonModal
                     isModalVisible={this.state.isSignUpLessonModalVisible}

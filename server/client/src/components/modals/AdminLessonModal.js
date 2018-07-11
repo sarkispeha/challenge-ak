@@ -11,7 +11,7 @@ import '../../styles/modal.css';
 
 let initialLessondata = {};
 
-class NewLessonModal extends Component {
+class AdminLessonModal extends Component {
     constructor(props){
         super(props);
 
@@ -154,14 +154,14 @@ class NewLessonModal extends Component {
     }
 }
 
-NewLessonModal = reduxForm({
+AdminLessonModal = reduxForm({
         form: 'newLessonForm'
-    })(NewLessonModal);
+    })(AdminLessonModal);
 
-NewLessonModal = connect(
+AdminLessonModal = connect(
     state => ({
         initialValues: initialLessondata 
     })
-)(NewLessonModal)
+)(AdminLessonModal)
 
-export default NewLessonModal;
+export default AdminLessonModal;
