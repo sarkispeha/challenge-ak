@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import _ from 'lodash';
 import { Modal, Overlay } from 'react-modal-construction-kit';
 import { reduxForm, Field } from 'redux-form';
 
-import NewLessonField from './NewLessonField';
-import newLessonFormFields from './newLessonFormFields';
+// import NewLessonField from './NewLessonField';
+// import newLessonFormFields from './newLessonFormFields';
 import { timeOfDay } from '../../utils/timeUtils';
 import '../../styles/modal.css';
 
@@ -22,7 +21,7 @@ class AdminLessonModal extends Component {
     }
 
     componentDidMount(){
-        this.getFormProps();   
+        this.setFormProps();   
     }
 
     componentWillReceiveProps(nextProps) {
@@ -46,13 +45,13 @@ class AdminLessonModal extends Component {
         this.props.reset(); //from redux-form baked-in props
     }
 
-    renderFields(){
-        return _.map(newLessonFormFields, ({ label, name, type }) => { 
-            return <Field component={NewLessonField} type={type} label={label} name={name} key={name} />
-        })
-    }
+    // renderFields(){
+    //     return _.map(newLessonFormFields, ({ label, name, type }) => { 
+    //         return <Field component={NewLessonField} type={type} label={label} name={name} key={name} />
+    //     })
+    // }
 
-    getFormProps(){
+    setFormProps(){
         if(this.props.isAdminUpdate){
             let lessonId = initialLessondata._id;
             this.formProps.submit = this.props.handleSubmit(values =>this.props.handleUpdateLesson(values, lessonId) );
@@ -62,12 +61,13 @@ class AdminLessonModal extends Component {
     }
 
     renderNewOrUpdate(){
+        // eslint-disable-next-line
         if(!this.props.isAdminUpdate){ return 'Submit'}else{ return 'Update'};
     }
     
     render(){
 
-        this.getFormProps();//run on render as isAdminUpdate is passed as a prop and cannot be changed on conponentWillRecieveProps
+        this.setFormProps();//run on render as isAdminUpdate is passed as a prop and cannot be changed on conponentWillRecieveProps
 
         return (
             <div>

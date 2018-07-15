@@ -17,7 +17,10 @@ export const unixToCalDate = (unixNumber, hour) => {
 }
 
 export const timeOfDay = (currentLesson) => {
-    for( var prop in currentLesson.time){
+    if( currentLesson === undefined ){
+        return;
+    }
+    for( let prop in currentLesson.time){
         if(currentLesson.time[prop] === true){
             return prop;
         } 

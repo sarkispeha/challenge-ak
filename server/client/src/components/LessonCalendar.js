@@ -6,6 +6,7 @@ import _ from 'lodash';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 import AdminLessonModal from './modals/AdminLessonModal';
+import VolunteerLessonModal from './modals/VolunteerLessonModal';
 // import SignUpLessonModal from './modals/SignUpLessonModal';
 import * as timeUtil from '../utils/timeUtils';
 import * as actions from '../actions';
@@ -18,9 +19,10 @@ let allViews = Object.keys(BigCalendar.Views).map(k => BigCalendar.Views[k]);
 class LessonCalendar extends Component {
 
     constructor(props){
-        super();
+        super(props);
         this.state = {
             isAdminLessonModalVisible: false,
+            isVolunteerLessonModalVisible: false,
             modalTitle: '',
             isAdminEdit: false,
             isVolunteerEdit: false,
@@ -64,7 +66,8 @@ class LessonCalendar extends Component {
             }
             user.getOneUser(authUser.uid).then(snapshot =>{
                 this.setState({
-                    userPermissions: snapshot.val().role
+                    userPermissions: snapshot.val().role,
+                    userName : snapshot.val().username
                 })
             })
         })
@@ -79,12 +82,17 @@ class LessonCalendar extends Component {
                 isAdminUpdate : true,
                 lessonDetail : {...event}
             })
-        }//else if(this.state.userPermissions === 'volunteer'){
-        //     this.setState({
-        //         isSignUpModalVisible: true,
-        //         isAdminEdit : true
-        //     });
-        // }
+        }else if(this.state.userPermissions === 'volunteer'){
+            //show VolunteerLessonModal with event data
+            console.log('LESSON DETAIL', event);
+            
+            this.setState({
+                isVolunteerLessonModalVisible: true,
+                isVolunteerEdit : true,
+                lessonDetail : {...event},
+                modalDate: event.start.toLocaleString(),
+            });
+        }
         
     }
 
@@ -107,6 +115,7 @@ class LessonCalendar extends Component {
         //     )
     }
 
+    //TODO: abstract this out to util
     handleSaveLesson = async (values, date) => {
 
         const lessonDto = {
@@ -131,19 +140,34 @@ class LessonCalendar extends Component {
   
     }
 
-    handleUpdateLesson = async (values, lessonId) => {
+    //TODO: abstract this out to util
+    handleUpdateLesson = async (values, lessonId, volunteerSignUp) => {
 
-        const lessonDto = {
-            studentName: values.student_name,
-            type: values.lesson_type,
-            shadowNecessary: values.shadow,
-            time:{
-                AM: values.duration === "AM" ? true : false ,
-                PM: values.duration === "PM" ? true : false,
-                allDay: values.duration === "allDay" ? true : false
-            },
-            createdBy: 'Updated Somebody'
+        let lessonDto;
+        if(volunteerSignUp){
+            if(volunteerSignUp === 'instructor'){
+                lessonDto = {
+                    instructor: values.instructor
+                }
+            }else if(volunteerSignUp === 'shadow'){
+                lessonDto = {
+                    shadow: values.shadow
+                }
+            }
+        }else{
+            lessonDto = {
+                studentName: values.student_name,
+                type: values.lesson_type,
+                shadowNecessary: values.shadow_needed,
+                time:{
+                    AM: values.duration === "AM" ? true : false ,
+                    PM: values.duration === "PM" ? true : false,
+                    allDay: values.duration === "allDay" ? true : false
+                },
+                createdBy: 'Updated Somebody'
+            }
         }
+        // console.log('LESSON DTO', lessonDto);
         
         const updatedLesson = await this.props.updateLesson(lessonDto, lessonId);
         let oldLessonIndx = _.findIndex(this.props.lessons, {_id : lessonId} );
@@ -153,13 +177,15 @@ class LessonCalendar extends Component {
 
         this.setState({
             lessons: this.props.lessons,
-            isAdminLessonModalVisible: false
+            isAdminLessonModalVisible: false,
+            isVolunteerLessonModalVisible: false
         })
     }
 
     closeModal = () => {
         this.setState({
-            isAdminLessonModalVisible : false
+            isAdminLessonModalVisible : false,
+            isVolunteerLessonModalVisible : false
         })
     }
     
@@ -181,24 +207,29 @@ class LessonCalendar extends Component {
                 >
                 </AdminLessonModal>
 
-                {/* <SignUpLessonModal
-                    isModalVisible={this.state.isSignUpLessonModalVisible}
+                <VolunteerLessonModal
+                    isModalVisible={this.state.isVolunteerLessonModalVisible}
                     isVolunteerEdit={this.state.isVolunteerEdit}
+                    modalDate={this.state.modalDate}
+                    lessonDetail={this.state.lessonDetail}
+                    handleUpdateLesson={this.handleUpdateLesson}
+                    userName={this.state.userName}
+                    closeModal={this.closeModal}
                 >
-                </SignUpLessonModal>   */}
+                </VolunteerLessonModal>  
 
-            <div style={{height: '90vh'}} >
-                <BigCalendar
-                selectable
-                events={this.props.lessons}
-                views={allViews}
-                step={60}
-                startAccessor='start'
-                endAccessor='end'
-                onSelectEvent={event => this.selectEvent(event)}
-                onSelectSlot={ slotInfo => this.selectSlot(slotInfo)}
-                />
-            </div>
+                <div style={{height: '90vh'}} >
+                    <BigCalendar
+                    selectable
+                    events={this.props.lessons}
+                    views={allViews}
+                    step={60}
+                    startAccessor='start'
+                    endAccessor='end'
+                    onSelectEvent={event => this.selectEvent(event)}
+                    onSelectSlot={ slotInfo => this.selectSlot(slotInfo)}
+                    />
+                </div>
 
             </div>
         )
