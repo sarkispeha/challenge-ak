@@ -42,7 +42,7 @@ class VolunteerLessonModal extends Component{
             if(this.props.lessonDetail.shadow.length === 0){
                 return (
                     <div>
-                        <button type="submit">Shadow this Lesson</button>
+                        <button name="shadow_submit" type="submit">Shadow this Lesson</button>
                     </div>
                 );
             }else{
@@ -60,7 +60,7 @@ class VolunteerLessonModal extends Component{
         if(instructor !== undefined) {
             if(instructor.length === 0){
                 return (
-                        <button type="submit">Sign Up</button>
+                        <button name="instructor_submit" type="submit">Sign Up</button>
                 );
             }
         }
@@ -93,10 +93,10 @@ class VolunteerLessonModal extends Component{
                         </form>
                         <label >Lesson Type</label>
                         <p>{this.props.lessonDetail.type}</p>
-                    <form onSubmit={this.props.handleSubmit(values => this.updateLessonForVolunteer('instructor', values) )}>
-                        <Field component="input" name="instructor" type="hidden" />
-                        {this.renderInstructorSubmit()}
-                    </form>
+                        <form onSubmit={this.props.handleSubmit(values => this.updateLessonForVolunteer('instructor', values) )}>
+                            <Field component="input" name="instructor" type="hidden" />
+                            {this.renderInstructorSubmit()}
+                        </form>
                 </Modal>
                 <Overlay
                 isVisible={this.state.isModalVisible} />

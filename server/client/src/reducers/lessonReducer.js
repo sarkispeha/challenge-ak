@@ -3,7 +3,6 @@ import { FETCH_LESSONS } from '../actions/types';
 export default function(state = [], action) {
   switch (action.type) {
       case FETCH_LESSONS :
-        console.log('FETCHING LESSONS REDUCER');
       
           if(action.payload.length === 0){
             console.log('RETURNING OG STATE', state); 

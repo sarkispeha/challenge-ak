@@ -9,6 +9,7 @@ import AdminLessonModal from './modals/AdminLessonModal';
 import VolunteerLessonModal from './modals/VolunteerLessonModal';
 // import SignUpLessonModal from './modals/SignUpLessonModal';
 import * as timeUtil from '../utils/timeUtils';
+import * as calendarUtil from '../utils/calendarUtils';
 import * as actions from '../actions';
 import { firebase, user } from '../firebase';
 
@@ -36,25 +37,7 @@ class LessonCalendar extends Component {
         this.props.fetchLessons().then( () =>{
             for(let i = 0; i < this.props.lessons.length; i++){
                 let currentLesson = this.props.lessons[i];
-                let lessonDate = currentLesson.date;
-                let startLessonTime, endLessonTime;
-
-                let timeOfDayCalc = timeUtil.timeOfDay(currentLesson);
-
-                if(timeOfDayCalc === 'AM'){
-                    startLessonTime = timeUtil.unixToCalDate( lessonDate + 36000);
-                    endLessonTime = timeUtil.unixToCalDate( lessonDate + 43200);
-                }else if (timeOfDayCalc === 'PM'){
-                    startLessonTime = timeUtil.unixToCalDate( lessonDate + 50400);
-                    endLessonTime = timeUtil.unixToCalDate( lessonDate + 57600);
-                }else{
-                    startLessonTime = timeUtil.unixToCalDate( lessonDate + 36000);
-                    endLessonTime = timeUtil.unixToCalDate( lessonDate + 57600);
-                }
-               
-                currentLesson.start = startLessonTime;
-                currentLesson.end = endLessonTime;
-                currentLesson.title = timeOfDayCalc !== 'allDay' ? currentLesson.type + ' ' + timeOfDayCalc : currentLesson.type + ' All Day';
+                currentLesson = calendarUtil.formatForBigCal(currentLesson);
             }
             // console.log('Finished LESSONS', this.props.lessons);
             
@@ -131,10 +114,12 @@ class LessonCalendar extends Component {
             createdBy: 'Somebody'
         }
         
-        const newLesson = await this.props.saveNewLesson(lessonDto);
+        let newLesson = await this.props.saveNewLesson(lessonDto);
+        newLesson = calendarUtil.formatForBigCal(newLesson);
+        this.props.lessons.push(newLesson)
      
         this.setState({
-            lessons: this.props.lessons.push(newLesson),
+            lessons: this.props.lessons,
             isAdminLessonModalVisible: false
         })
   
@@ -169,10 +154,10 @@ class LessonCalendar extends Component {
         }
         // console.log('LESSON DTO', lessonDto);
         
-        const updatedLesson = await this.props.updateLesson(lessonDto, lessonId);
+        let updatedLesson = await this.props.updateLesson(lessonDto, lessonId);
         let oldLessonIndx = _.findIndex(this.props.lessons, {_id : lessonId} );
 
-        //TODO create correctly formatted updatedLesson to display on BigCalendar
+        updatedLesson = calendarUtil.formatForBigCal(updatedLesson);
         this.props.lessons.splice(oldLessonIndx, 1, updatedLesson);
 
         this.setState({
