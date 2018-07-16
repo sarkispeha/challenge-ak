@@ -175,6 +175,7 @@ class LessonCalendar extends Component {
                 <div style={{height: '90vh'}} >
                     <BigCalendar
                     selectable
+                    defaultDate={new Date()}
                     events={this.props.lessons}
                     views={allViews}
                     step={60}
