@@ -7,8 +7,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 import AdminLessonModal from './modals/AdminLessonModal';
 import VolunteerLessonModal from './modals/VolunteerLessonModal';
-// import SignUpLessonModal from './modals/SignUpLessonModal';
-import * as timeUtil from '../utils/timeUtils';
+
 import * as calendarUtil from '../utils/calendarUtils';
 import * as actions from '../actions';
 import { firebase, user } from '../firebase';
@@ -34,14 +33,14 @@ class LessonCalendar extends Component {
 
     componentDidMount() {  
 
-        this.props.fetchLessons().then( () =>{
-            for(let i = 0; i < this.props.lessons.length; i++){
-                let currentLesson = this.props.lessons[i];
-                currentLesson = calendarUtil.formatForBigCal(currentLesson);
-            }
-            // console.log('Finished LESSONS', this.props.lessons);
-            
-        });
+        this.props.fetchLessons();
+        // this.props.fetchLessons().then( () =>{
+        //     for(let i = 0; i < this.props.lessons.length; i++){
+        //         let currentLesson = this.props.lessons[i];
+        //         currentLesson = calendarUtil.formatForBigCal(currentLesson);
+        //     }  
+        // });
+        
 
         firebase.auth.onAuthStateChanged(authUser => {
             if(!authUser){
@@ -141,6 +140,11 @@ class LessonCalendar extends Component {
     
     render() {
 
+        for(let i = 0; i < this.props.lessons.length; i++){
+            let currentLesson = this.props.lessons[i];
+            currentLesson = calendarUtil.formatForBigCal(currentLesson);
+        }
+        
         return (
             <div>
               
