@@ -98,21 +98,9 @@ class LessonCalendar extends Component {
         //     )
     }
 
-    //TODO: abstract this out to util
     handleSaveLesson = async (values, date) => {
 
-        const lessonDto = {
-            studentName: values.student_name,
-            type: values.lesson_type,
-            shadowNecessary: values.shadow,
-            date: timeUtil.startOfDayUnix(date),
-            time:{
-                AM: values.duration === "AM" ? true : false ,
-                PM: values.duration === "PM" ? true : false,
-                allDay: values.duration === "allDay" ? true : false
-            },
-            createdBy: 'Somebody'
-        }
+        const lessonDto = calendarUtil.formatLessonDto(values, date);
         
         let newLesson = await this.props.saveNewLesson(lessonDto);
         newLesson = calendarUtil.formatForBigCal(newLesson);
@@ -125,34 +113,9 @@ class LessonCalendar extends Component {
   
     }
 
-    //TODO: abstract this out to util
     handleUpdateLesson = async (values, lessonId, volunteerSignUp) => {
 
-        let lessonDto;
-        if(volunteerSignUp){
-            if(volunteerSignUp === 'instructor'){
-                lessonDto = {
-                    instructor: values.instructor
-                }
-            }else if(volunteerSignUp === 'shadow'){
-                lessonDto = {
-                    shadow: values.shadow
-                }
-            }
-        }else{
-            lessonDto = {
-                studentName: values.student_name,
-                type: values.lesson_type,
-                shadowNecessary: values.shadow_needed,
-                time:{
-                    AM: values.duration === "AM" ? true : false ,
-                    PM: values.duration === "PM" ? true : false,
-                    allDay: values.duration === "allDay" ? true : false
-                },
-                createdBy: 'Updated Somebody'
-            }
-        }
-        // console.log('LESSON DTO', lessonDto);
+        let lessonDto = calendarUtil.formatLessonDto(values, null, volunteerSignUp ) 
         
         let updatedLesson = await this.props.updateLesson(lessonDto, lessonId);
         let oldLessonIndx = _.findIndex(this.props.lessons, {_id : lessonId} );

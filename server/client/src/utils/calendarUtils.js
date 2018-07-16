@@ -24,3 +24,36 @@ export const formatForBigCal = (currentLesson) => {
     
     return currentLesson;
 }
+
+export const formatLessonDto = (values, date, volunteerSignUp) => {
+
+    let lessonDto;
+    if(volunteerSignUp){
+        if(volunteerSignUp === 'instructor'){
+            lessonDto = {
+                instructor: values.instructor
+            }
+        }else if(volunteerSignUp === 'shadow'){
+            lessonDto = {
+                shadow: values.shadow
+            }
+        }
+    }else{
+        lessonDto = {
+            studentName: values.student_name,
+            type: values.lesson_type,
+            shadowNecessary: values.shadow_needed,
+            time:{
+                AM: values.duration === "AM" ? true : false ,
+                PM: values.duration === "PM" ? true : false,
+                allDay: values.duration === "allDay" ? true : false
+            },
+            createdBy: 'Updated Somebody'
+        }
+    }
+    if(date !== null){
+        lessonDto.date = timeUtil.startOfDayUnix(date);
+    }
+
+    return lessonDto;
+}
