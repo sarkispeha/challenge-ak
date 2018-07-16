@@ -31,12 +31,13 @@ class AdminLessonModal extends Component {
                 isModalVisible: nextProps.isModalVisible,
             });
 
-            let {studentName, type, shadowNecessary, _id} = nextProps.lessonDetail;
+            let {studentName, type, shadowNecessary, _id, createdBy} = nextProps.lessonDetail;
             initialLessondata._id = _id;
             initialLessondata.student_name = studentName;
             initialLessondata.lesson_type = type;
             initialLessondata.shadow_needed = shadowNecessary !== undefined ? shadowNecessary.toString() : '';
-            initialLessondata.duration = timeOfDay(nextProps.lessonDetail); 
+            initialLessondata.duration = timeOfDay(nextProps.lessonDetail);
+            initialLessondata.created_by = createdBy;
         }
     }
 
@@ -141,6 +142,7 @@ class AdminLessonModal extends Component {
                             </label>
                             </p>
                         </div>
+                        <Field component="input" name="created_by" type="hidden" />
                         <button type="submit">{this.renderNewOrUpdate()}</button>
                     </form>
                     <p>

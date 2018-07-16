@@ -88,7 +88,9 @@ class LessonCalendar extends Component {
                 isAdminEdit : true,
                 isAdminUpdate : false,
                 modalDate: slotInfo.start.toLocaleString(),
-                lessonDetail : {}
+                lessonDetail : {
+                    createdBy : this.state.userName
+                }
             });
         }
         // alert(

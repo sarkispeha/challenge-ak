@@ -44,11 +44,11 @@ export const formatLessonDto = (values, date, volunteerSignUp) => {
             type: values.lesson_type,
             shadowNecessary: values.shadow_needed,
             time:{
-                AM: values.duration === "AM" ? true : false ,
+                AM: values.duration === "AM" ? true : false,
                 PM: values.duration === "PM" ? true : false,
                 allDay: values.duration === "allDay" ? true : false
             },
-            createdBy: 'Updated Somebody'
+            createdBy: values.created_by
         }
     }
     if(date !== null){
