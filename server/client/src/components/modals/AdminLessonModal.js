@@ -77,6 +77,9 @@ class AdminLessonModal extends Component {
                     onClosed={this.close}
                     isOpen={this.state.isModalVisible}
                 >
+                    
+                    <i onClick={this.close} className="close-icon material-icons right">close</i>
+                    
                     <h5>Enter Lesson Details</h5>
                     <form onSubmit={this.formProps.submit}>
                         {/* {this.renderFields()} */}

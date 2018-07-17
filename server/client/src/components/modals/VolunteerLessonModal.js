@@ -75,6 +75,7 @@ class VolunteerLessonModal extends Component{
                     onClosed={this.close}
                     isOpen={this.state.isModalVisible}
                 >
+                    <i onClick={this.close} className="close-icon material-icons right">close</i>
                     <h5>Lesson Details</h5>
                     <p>
                         {this.props.modalDate}

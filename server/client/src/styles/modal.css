@@ -5,3 +5,14 @@
 .radio-component{
     margin-left: 20px;
 }
+
+.close-icon{
+    position: absolute;
+    right: 0;
+    border: 1px solid;
+    padding: 10px 10px;
+    margin: 5px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 35px;
+}

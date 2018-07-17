@@ -4,6 +4,7 @@ import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
 import _ from 'lodash';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import '../styles/calendar.css';
 
 import AdminLessonModal from './modals/AdminLessonModal';
 import VolunteerLessonModal from './modals/VolunteerLessonModal';
@@ -14,7 +15,7 @@ import { firebase, user } from '../firebase';
 
 BigCalendar.momentLocalizer(moment);
 
-let allViews = Object.keys(BigCalendar.Views).map(k => BigCalendar.Views[k]);
+// let allViews = Object.keys(BigCalendar.Views).map(k => BigCalendar.Views[k]);
 
 class LessonCalendar extends Component {
 
@@ -177,7 +178,7 @@ class LessonCalendar extends Component {
                     selectable
                     defaultDate={new Date()}
                     events={this.props.lessons}
-                    views={allViews}
+                    views={['month', 'week', 'day']}
                     step={60}
                     startAccessor='start'
                     endAccessor='end'
