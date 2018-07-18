@@ -20,8 +20,9 @@ export const updateLesson = (lessonDto, lessonId) => async () => {
     return res.data;
 }
 
-// export const saveNewLesson = (values, date) => async dispatch => {    
-//     const dto = {...values, date}
-//     const res = await axios.post('/api/lessons', dto);
-//     dispatch({type: FETCH_LESSONS, payload: res.data});
-// }
+export const saveNewUser = (userDto) => async () => {
+
+    const res = await axios.post('/api/users', userDto);
+    return res.data;
+    
+}

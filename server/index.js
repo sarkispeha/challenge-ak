@@ -2,7 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const keys = require('./config/keys');
-require('./models/Lesson'); 
+require('./models/Lesson');
+require('./models/User');
 
 mongoose.connect(keys.mongoURI);
 const app = express();
@@ -11,6 +12,7 @@ app.use(bodyParser.json());
 
 // require('./routes/core')(app);
 require('./routes/api/lessonRoutes')(app);
+require('./routes/api/userRoutes')(app);
 
 if(process.env.NODE_ENV === 'production'){
     app.use(express.static('client/build'));

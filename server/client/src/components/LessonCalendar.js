@@ -54,7 +54,7 @@ class LessonCalendar extends Component {
                 })
             })
         })
-        
+      
     }
 
     selectEvent = (event) => {
