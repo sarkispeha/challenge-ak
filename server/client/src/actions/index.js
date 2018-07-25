@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { FETCH_LESSONS } from './types';
+import { FETCH_LESSONS, FETCH_USERS } from './types';
 
 export const fetchLessons = () => async dispatch => {
 
@@ -25,4 +25,11 @@ export const saveNewUser = (userDto) => async () => {
     const res = await axios.post('/api/users', userDto);
     return res.data;
     
+}
+
+export const fetchUsers = () => async dispatch => {
+
+    const res = await axios.get('/api/users');
+    console.log('FETCHING USERS', res);
+    dispatch({type: FETCH_USERS, payload: res.data});
 }

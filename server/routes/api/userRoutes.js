@@ -35,17 +35,17 @@ module.exports = app => {
     //         }
     //     )
     // });
-    //get all lessons
-    // app.get('/api/lessons', (req, res) => {
+    // get all users
+    app.get('/api/users', (req, res) => {
                 
-    //     Lesson.find(
-    //         {},
-    //         (err, items) => {
-    //             if(err) return res.status(500).send(err)
-    //             res.send(items);
-    //         }
-    //     )
-    // });
+        User.find(
+            {},
+            (err, items) => {
+                if(err) return res.status(500).send(err)
+                res.send(items);
+            }
+        )
+    });
 
     // app.put('/api/lessons/:lessonId', (req, res) => {
         

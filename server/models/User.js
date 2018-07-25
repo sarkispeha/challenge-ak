@@ -7,6 +7,7 @@ const userSchema = new Schema({
     username: String,
     role: String,
     email: String,
+    volunteerHours: {type: Number, default: 0},
     isDeleted: { type: Boolean, default: false},
     createdTimestamp: {type: Number, default: moment().unix() } //unix
 });
