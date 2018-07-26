@@ -30,6 +30,9 @@ export const saveNewUser = (userDto) => async () => {
 export const fetchUsers = () => async dispatch => {
 
     const res = await axios.get('/api/users');
-    console.log('FETCHING USERS', res);
+    // return res.data;
     dispatch({type: FETCH_USERS, payload: res.data});
+
+    //for self learning purposes, need to figure out why the dispatch works
+    //and why a return res.data does not
 }

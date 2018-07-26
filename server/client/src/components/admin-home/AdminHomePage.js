@@ -2,14 +2,20 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
 
+import { fetchUsers } from '../../actions';
 // import withAuthorization from './withAuthorization';
 // import { user } from '../firebase';
 
 class AdminHomePage extends Component {
 
   componentDidMount() {
-    const { onGetUsers } = this.props;
+    // const { onGetUsers } = this.props;
 
+    this.props.fetchUsers().then( (users) => {
+      console.log('THIS PROPS', this.props);
+    })
+    
+    
     // fetchUsers = async () => {
     //   const allUsers = await user.onceGetUsers()
     //   onSetUsers(allUsers.val());
@@ -39,7 +45,7 @@ class AdminHomePage extends Component {
 const UserList = ({ users }) =>
   <div>
     <h2>List of Usernames of Users</h2>
-    <p>(Saved on Sign Up in Firebase Database)</p>
+    <p>(Saved on Sign Up in Mongo Database)</p>
 
     {Object.keys(users).map(key =>
       <div key={key}>{users[key].username}</div>
@@ -48,18 +54,18 @@ const UserList = ({ users }) =>
 
 
 const mapStateToProps = (state) => ({
-  users: state.userState.users,
+  users: state.userState
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  onGetUsers: (users) => dispatch({ type: 'fetch_users', users })
-});
+// const mapDispatchToProps = (dispatch) => ({
+//   onGetUsers: (users) => dispatch({ type: 'fetch_users', users })
+// });
 
-const authCondition = (authUser) => !!authUser;
+// const authCondition = (authUser) => !!authUser;
 
 // export default compose(
 //   withAuthorization(authCondition),
 //   connect(mapStateToProps, mapDispatchToProps)
 // )(AdminHomePage);
 
-export default connect(mapStateToProps, mapDispatchToProps)(AdminHomePage);
+export default connect(mapStateToProps, { fetchUsers })(AdminHomePage);
