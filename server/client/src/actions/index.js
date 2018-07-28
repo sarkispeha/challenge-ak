@@ -30,6 +30,8 @@ export const saveNewUser = (userDto) => async () => {
 export const fetchUsers = () => async dispatch => {
 
     const res = await axios.get('/api/users');
+    console.log('FETCHING USERS FROM ACTIONS INDEX', res.data);
+    
     // return res.data;
     dispatch({type: FETCH_USERS, payload: res.data});
 

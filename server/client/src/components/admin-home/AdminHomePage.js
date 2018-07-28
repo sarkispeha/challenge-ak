@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { compose } from 'recompose';
+// import { compose } from 'recompose';
+
+import UserEdit from './UserEdit';
 
 import { fetchUsers } from '../../actions';
 // import withAuthorization from './withAuthorization';
@@ -34,38 +36,25 @@ class AdminHomePage extends Component {
     return (
       <div>
         <h1>Admin Home</h1>
-        <p>The Home Page is accessible admin users.</p>
+        <p>The Admin Home Page is accessible to admin users.</p>
 
-        { !!users && <UserList users={users} /> }
+        { !!users && <UserEdit users={users} /> }
       </div>
     );
   }
 }
 
-const UserList = ({ users }) =>
-  <div>
-    <h2>List of Usernames of Users</h2>
-    <p>(Saved on Sign Up in Mongo Database)</p>
 
-    {Object.keys(users).map(key =>
-      <div key={key}>{users[key].username}</div>
-    )}
-  </div>
-
-
-const mapStateToProps = (state) => ({
-  users: state.userState
-});
-
-// const mapDispatchToProps = (dispatch) => ({
-//   onGetUsers: (users) => dispatch({ type: 'fetch_users', users })
-// });
+const mapStateToProps = (state) => {
+  console.log('state from props', state);
+  return {users: state.userState}
+};
 
 // const authCondition = (authUser) => !!authUser;
 
 // export default compose(
 //   withAuthorization(authCondition),
-//   connect(mapStateToProps, mapDispatchToProps)
+//   connect(mapStateToProps, { fetchUsers })
 // )(AdminHomePage);
 
 export default connect(mapStateToProps, { fetchUsers })(AdminHomePage);
