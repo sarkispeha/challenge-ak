@@ -46,7 +46,7 @@ class AdminHomePage extends Component {
 
 
 const mapStateToProps = (state) => {
-  console.log('state from props', state);
+  // console.log('state from props', state);
   return {users: state.userState}
 };
 
